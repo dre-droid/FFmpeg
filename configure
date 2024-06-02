@@ -230,6 +230,7 @@ External library support:
                            and libraw1394 [no]
   --enable-libdvdnav       enable libdvdnav, needed for DVD demuxing [no]
   --enable-libdvdread      enable libdvdread, needed for DVD demuxing [no]
+  --enable-libessim        enable eSSIM filter via libessim [no]
   --enable-libfdk-aac      enable AAC de/encoding via libfdk-aac [no]
   --enable-libflite        enable flite (voice synthesis) support via libflite [no]
   --enable-libfontconfig   enable libfontconfig, useful for drawtext filter [no]
@@ -1914,6 +1915,7 @@ EXTERNAL_LIBRARY_LIST="
     libcodec2
     libdav1d
     libdc1394
+    libessim
     libflite
     libfontconfig
     libfreetype
@@ -3852,6 +3854,7 @@ drawtext_filter_suggest="libfontconfig libfribidi"
 elbg_filter_deps="avcodec"
 eq_filter_deps="gpl"
 erosion_opencl_filter_deps="opencl"
+essim_filter_deps="libessim"
 find_rect_filter_deps="avcodec avformat gpl"
 flip_vulkan_filter_deps="vulkan spirv_compiler"
 flite_filter_deps="libflite threads"
@@ -6881,6 +6884,7 @@ enabled libdc1394         && require_pkg_config libdc1394 libdc1394-2 dc1394/dc1
 enabled libdrm            && check_pkg_config libdrm libdrm xf86drm.h drmGetVersion
 enabled libdvdnav         && require_pkg_config libdvdnav "dvdnav >= 6.1.1" dvdnav/dvdnav.h dvdnav_open2
 enabled libdvdread        && require_pkg_config libdvdread "dvdread >= 6.1.2" dvdread/dvd_reader.h DVDOpen2
+enabled libessim          && require_pkg_config libessim "essim" "essim.h" ssim_compute_ctx
 enabled libfdk_aac        && { check_pkg_config libfdk_aac fdk-aac "fdk-aac/aacenc_lib.h" aacEncOpen ||
                                { require libfdk_aac fdk-aac/aacenc_lib.h aacEncOpen -lfdk-aac &&
                                  warn "using libfdk without pkg-config"; } }
