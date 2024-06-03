@@ -1,0 +1,69 @@
+From db6613822bd92d0dfed94d7e559c49b8bfa9a7cb Mon Sep 17 00:00:00 2001
+From: Andrea Mastroberti <10736595@polimi.it>
+Date: Sun, 2 Jun 2024 17:35:13 +0200
+Subject: [PATCH] libessim patch
+
+
+diff --git a/configure b/configure
+index b16722d83d..38065514aa 100755
+--- a/configure
++++ b/configure
+@@ -230,6 +230,7 @@ External library support:
+                            and libraw1394 [no]
+   --enable-libdvdnav       enable libdvdnav, needed for DVD demuxing [no]
+   --enable-libdvdread      enable libdvdread, needed for DVD demuxing [no]
++  --enable-libessim        enable eSSIM filter via libessim [no]
+   --enable-libfdk-aac      enable AAC de/encoding via libfdk-aac [no]
+   --enable-libflite        enable flite (voice synthesis) support via libflite [no]
+   --enable-libfontconfig   enable libfontconfig, useful for drawtext filter [no]
+@@ -1914,6 +1915,7 @@ EXTERNAL_LIBRARY_LIST="
+     libcodec2
+     libdav1d
+     libdc1394
++    libessim
+     libflite
+     libfontconfig
+     libfreetype
+@@ -3852,6 +3854,7 @@ drawtext_filter_suggest="libfontconfig libfribidi"
+ elbg_filter_deps="avcodec"
+ eq_filter_deps="gpl"
+ erosion_opencl_filter_deps="opencl"
++essim_filter_deps="libessim"
+ find_rect_filter_deps="avcodec avformat gpl"
+ flip_vulkan_filter_deps="vulkan spirv_compiler"
+ flite_filter_deps="libflite threads"
+@@ -6881,6 +6884,7 @@ enabled libdc1394         && require_pkg_config libdc1394 libdc1394-2 dc1394/dc1
+ enabled libdrm            && check_pkg_config libdrm libdrm xf86drm.h drmGetVersion
+ enabled libdvdnav         && require_pkg_config libdvdnav "dvdnav >= 6.1.1" dvdnav/dvdnav.h dvdnav_open2
+ enabled libdvdread        && require_pkg_config libdvdread "dvdread >= 6.1.2" dvdread/dvd_reader.h DVDOpen2
++enabled libessim          && require_pkg_config libessim "essim" "essim.h" ssim_compute_ctx
+ enabled libfdk_aac        && { check_pkg_config libfdk_aac fdk-aac "fdk-aac/aacenc_lib.h" aacEncOpen ||
+                                { require libfdk_aac fdk-aac/aacenc_lib.h aacEncOpen -lfdk-aac &&
+                                  warn "using libfdk without pkg-config"; } }
+diff --git a/libavfilter/Makefile b/libavfilter/Makefile
+index 5992fd161f..508fdd1685 100644
+--- a/libavfilter/Makefile
++++ b/libavfilter/Makefile
+@@ -300,6 +300,7 @@ OBJS-$(CONFIG_EQ_FILTER)                     += vf_eq.o
+ OBJS-$(CONFIG_EROSION_FILTER)                += vf_neighbor.o
+ OBJS-$(CONFIG_EROSION_OPENCL_FILTER)         += vf_neighbor_opencl.o opencl.o \
+                                                 opencl/neighbor.o
++OBJS-$(CONFIG_ESSIM_FILTER)                  += vf_essim.o framesync.o
+ OBJS-$(CONFIG_ESTDIF_FILTER)                 += vf_estdif.o
+ OBJS-$(CONFIG_EXPOSURE_FILTER)               += vf_exposure.o
+ OBJS-$(CONFIG_EXTRACTPLANES_FILTER)          += vf_extractplanes.o
+diff --git a/libavfilter/allfilters.c b/libavfilter/allfilters.c
+index c532682fc2..34a0aca67c 100644
+--- a/libavfilter/allfilters.c
++++ b/libavfilter/allfilters.c
+@@ -275,6 +275,7 @@ extern const AVFilter ff_vf_epx;
+ extern const AVFilter ff_vf_eq;
+ extern const AVFilter ff_vf_erosion;
+ extern const AVFilter ff_vf_erosion_opencl;
++extern const AVFilter ff_vf_essim;
+ extern const AVFilter ff_vf_estdif;
+ extern const AVFilter ff_vf_exposure;
+ extern const AVFilter ff_vf_extractplanes;
+-- 
+2.45.1
+
