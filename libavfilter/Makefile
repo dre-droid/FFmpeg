@@ -301,6 +301,7 @@ OBJS-$(CONFIG_EROSION_FILTER)                += vf_neighbor.o
 OBJS-$(CONFIG_EROSION_OPENCL_FILTER)         += vf_neighbor_opencl.o opencl.o \
                                                 opencl/neighbor.o
 OBJS-$(CONFIG_ESSIM_FILTER)                  += vf_essim.o framesync.o
+OBJS-$(CONFIG_MYESSIM_FILTER)                += vf_myessim.o
 OBJS-$(CONFIG_ESTDIF_FILTER)                 += vf_estdif.o
 OBJS-$(CONFIG_EXPOSURE_FILTER)               += vf_exposure.o
 OBJS-$(CONFIG_EXTRACTPLANES_FILTER)          += vf_extractplanes.o
